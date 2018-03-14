@@ -54,17 +54,19 @@ def post_log(event, context):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('dev-jjv')
 
-    #yy = json.loads(event["body"])
+    yy = json.loads(event["body"])
 
-    user_id = "taro" #yy["user_id"]
+    user_id = yy["user_id"]
     dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S.%f')
-    message = "hello!!" #yy["message"]
+    message = yy["message"]
+    comment = yy["comment"]
 
     table.put_item(
         Item={
             "user_id": user_id,
             "created_at": dt,
-            "message": message
+            "message": message,
+            "comment": comment
         }
     )
 
