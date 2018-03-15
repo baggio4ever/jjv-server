@@ -144,7 +144,10 @@ def upload(event, context):
     return response
 
 
+DYNAMO_TABLE_NAME = "dev-jjv"
+
 '''
+user_idがuploadしたファイルの一覧を返す
 クエリー文字列で渡す
 
 user_id=xxxx な感じ
@@ -195,6 +198,86 @@ def get_files(event, context):
 
     body = {
         "files": items,
+        "input": event,
+        "origin":origin
+    }
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(body),
+        "headers": {
+            "Access-Control-Allow-Origin":origin
+        }
+    }
+
+    return response
+
+    # Use this code if you don't use the http event with the LAMBDA-PROXY
+    # integration
+    """
+    return {
+        "message": "Go Serverless v1.0! Your function executed successfully!",
+        "event": event
+    }
+    """
+
+
+'''
+user_id + creaeted_at で一意に決まるファイルを返す
+クエリー文字列で渡す
+
+user_id=xxxx&created_at=yyyyyyy な感じ
+
+{
+    user_id: xxxx
+    created_at: yyyyy
+}
+
+'''
+
+def download(event, context):
+    if event["headers"] is not None:
+        if "origin" in event["headers"]:
+            origin = event["headers"]["origin"]  # どこから聞かれても返せるように
+        else:
+            origin = ""
+    else:
+        origin = ""
+
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('dev-jjv')
+
+    if( event["queryStringParameters"] is not None ):
+        params = event["queryStringParameters"]
+        user_id = params.get("user_id")
+        created_at = params.get("created_at")
+        if user_id is not None:
+            response = table.get_item(
+                Key={
+                    'user_id': user_id,
+                    'created_at': created_at
+                }
+                    )
+
+            item = response['Item']
+        else:
+            item = ["a","b"]
+    else:
+        item = ["x","Z"]
+
+#    yy = json.loads(event["queryStringParameters"])
+
+#    user_id = yy["user_id"]
+
+#    user_id = json.loads(event["user_id"]);
+
+#    response = table.query(
+#        KeyConditionExpression=Key('user_id').eq( user_id )
+#    )
+#    items = response['Items']
+
+
+    body = {
+        "result": item,
         "input": event,
         "origin":origin
     }
