@@ -112,6 +112,14 @@ functions:
           method: post
           private: false # APIキーを使用する
           cors: true  # API GatewayにCORSの設定をする
+  files:
+    handler: handler.get_files
+    events:
+      - http:
+          path: files
+          method: get
+          private: false # APIキーを使用する
+          cors: true  # API GatewayにCORSの設定をする
 
 #    Define function environment variables here
 #    environment:
