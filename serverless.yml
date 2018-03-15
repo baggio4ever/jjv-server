@@ -104,6 +104,14 @@ functions:
           method: post
           private: false # APIキーを使用する
           cors: true  # API GatewayにCORSの設定をする
+  upload_xml:
+    handler: handler.upload
+    events:
+      - http:
+          path: upload
+          method: post
+          private: false # APIキーを使用する
+          cors: true  # API GatewayにCORSの設定をする
 
 #    Define function environment variables here
 #    environment:
