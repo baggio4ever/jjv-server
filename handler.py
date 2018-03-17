@@ -113,6 +113,7 @@ def upload(event, context):
     filename = yy["filename"]
     xml = yy["xml"]
     comment = yy["comment"]
+    upload_date = yy["upload_date"]
 
     table.put_item(
         Item={
@@ -120,7 +121,8 @@ def upload(event, context):
             "created_at": dt,
             "filename": filename,
             "xml": xml,
-            "comment": comment
+            "comment": comment,
+            "upload_date": upload_date
         }
     )
 
