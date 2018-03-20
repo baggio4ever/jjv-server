@@ -3,6 +3,11 @@ from datetime import datetime
 import boto3
 from boto3.dynamodb.conditions import Key,Attr
 
+DYNAMO_TABLE_NAME = "dev-jjv"
+
+SERVER_NAME = "jjv-server"
+SERVER_VERSION = "0.1.0"
+
 
 def hello(event, context):
     if "headers" in event:
@@ -14,7 +19,8 @@ def hello(event, context):
         origin = ""
 
     body = {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
+        "name": SERVER_NAME,
+        "version": SERVER_VERSION,
         "input": event
     }
 
@@ -28,15 +34,7 @@ def hello(event, context):
 
     return response
 
-    # Use this code if you don't use the http event with the LAMBDA-PROXY
-    # integration
-    """
-    return {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "event": event
-    }
-    """
-
+'''
 def post_log(event, context):
     if "headers" in event:
         if "origin" in event["headers"]:
@@ -70,15 +68,6 @@ def post_log(event, context):
         }
     )
 
-    xx = json.loads(
-        '''
-        {
-            "user_id":"taro",
-            "message":"よこはまたそがれ"
-        }
-        '''
-    )
-
     response = {
         "statusCode": 200,
         "body": json.dumps(body),
@@ -88,6 +77,8 @@ def post_log(event, context):
     }
 
     return response
+'''
+
 
 def upload(event, context):
     if "headers" in event:
@@ -104,7 +95,7 @@ def upload(event, context):
     }
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('dev-jjv')
+    table = dynamodb.Table( DYNAMO_TABLE_NAME )
 
     yy = json.loads(event["body"])
 
@@ -146,7 +137,6 @@ def upload(event, context):
     return response
 
 
-DYNAMO_TABLE_NAME = "dev-jjv"
 
 '''
 user_idがuploadしたファイルの一覧を返す
@@ -170,7 +160,7 @@ def get_files(event, context):
         origin = ""
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('dev-jjv')
+    table = dynamodb.Table( DYNAMO_TABLE_NAME )
 
     if( event["queryStringParameters"] is not None ):
         params = event["queryStringParameters"]
@@ -185,17 +175,6 @@ def get_files(event, context):
             items = ["a","b"]
     else:
         items = ["x","Z"]
-
-#    yy = json.loads(event["queryStringParameters"])
-
-#    user_id = yy["user_id"]
-
-#    user_id = json.loads(event["user_id"]);
-
-#    response = table.query(
-#        KeyConditionExpression=Key('user_id').eq( user_id )
-#    )
-#    items = response['Items']
 
 
     body = {
@@ -212,15 +191,6 @@ def get_files(event, context):
     }
 
     return response
-
-    # Use this code if you don't use the http event with the LAMBDA-PROXY
-    # integration
-    """
-    return {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "event": event
-    }
-    """
 
 
 '''
@@ -246,7 +216,7 @@ def download(event, context):
         origin = ""
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('dev-jjv')
+    table = dynamodb.Table( DYNAMO_TABLE_NAME )
 
     if( event["queryStringParameters"] is not None ):
         params = event["queryStringParameters"]
@@ -266,23 +236,12 @@ def download(event, context):
     else:
         item = ["x","Z"]
 
-#    yy = json.loads(event["queryStringParameters"])
-
-#    user_id = yy["user_id"]
-
-#    user_id = json.loads(event["user_id"]);
-
-#    response = table.query(
-#        KeyConditionExpression=Key('user_id').eq( user_id )
-#    )
-#    items = response['Items']
-
-
     body = {
         "result": item,
         "input": event,
         "origin":origin
     }
+
     response = {
         "statusCode": 200,
         "body": json.dumps(body),
@@ -293,11 +252,3 @@ def download(event, context):
 
     return response
 
-    # Use this code if you don't use the http event with the LAMBDA-PROXY
-    # integration
-    """
-    return {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "event": event
-    }
-    """
