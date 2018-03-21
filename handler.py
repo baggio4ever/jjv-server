@@ -6,19 +6,10 @@ from boto3.dynamodb.conditions import Key,Attr
 DYNAMO_TABLE_NAME = "dev-jjv"
 
 SERVER_NAME = "jjv-server"
-SERVER_VERSION = "0.1.0"
+SERVER_VERSION = "0.1.2"
 
 
 def hello(event, context):
-    '''
-    if "headers" in event:
-        if "origin" in event["headers"]:
-            origin = event["headers"]["origin"]  # どこから聞かれても返せるように
-        else:
-            origin = ""
-    else:
-        origin = ""
-    '''
     body = {
         "name": SERVER_NAME,
         "version": SERVER_VERSION,
@@ -35,62 +26,8 @@ def hello(event, context):
 
     return response
 
-'''
-def post_log(event, context):
-    if "headers" in event:
-        if "origin" in event["headers"]:
-            origin = event["headers"]["origin"]  # どこから聞かれても返せるように
-        else:
-            origin = ""
-    else:
-        origin = ""
-
-    body = {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "input": event
-    }
-
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('dev-jjv')
-
-    yy = json.loads(event["body"])
-
-    user_id = yy["user_id"]
-    dt = datetime.now().strftime('%Y/%m/%d %H:%M:%S.%f')
-    message = yy["message"]
-    comment = yy["comment"]
-
-    table.put_item(
-        Item={
-            "user_id": user_id,
-            "created_at": dt,
-            "message": message,
-            "comment": comment
-        }
-    )
-
-    response = {
-        "statusCode": 200,
-        "body": json.dumps(body),
-        "headers": {
-            "Access-Control-Allow-Origin":origin
-        }
-    }
-
-    return response
-'''
-
 
 def upload(event, context):
-    '''
-    if "headers" in event:
-        if "origin" in event["headers"]:
-            origin = event["headers"]["origin"]  # どこから聞かれても返せるように
-        else:
-            origin = ""
-    else:
-        origin = ""
-    '''
 
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
@@ -120,15 +57,6 @@ def upload(event, context):
         }
     )
 
-    xx = json.loads(
-        '''
-        {
-            "user_id":"taro",
-            "message":"よこはまたそがれ"
-        }
-        '''
-    )
-
     response = {
         "statusCode": 200,
         "body": json.dumps(body),
@@ -154,15 +82,6 @@ user_id=xxxx な感じ
 '''
 
 def get_files(event, context):
-    '''
-    if event["headers"] is not None:
-        if "origin" in event["headers"]:
-            origin = event["headers"]["origin"]  # どこから聞かれても返せるように
-        else:
-            origin = ""
-    else:
-        origin = ""
-    '''
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table( DYNAMO_TABLE_NAME )
@@ -211,15 +130,6 @@ user_id=xxxx&created_at=yyyyyyy な感じ
 '''
 
 def download(event, context):
-    '''
-    if event["headers"] is not None:
-        if "origin" in event["headers"]:
-            origin = event["headers"]["origin"]  # どこから聞かれても返せるように
-        else:
-            origin = ""
-    else:
-        origin = ""
-    '''
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table( DYNAMO_TABLE_NAME )
@@ -256,4 +166,3 @@ def download(event, context):
     }
 
     return response
-
