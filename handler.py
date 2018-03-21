@@ -10,6 +10,7 @@ SERVER_VERSION = "0.1.0"
 
 
 def hello(event, context):
+    '''
     if "headers" in event:
         if "origin" in event["headers"]:
             origin = event["headers"]["origin"]  # どこから聞かれても返せるように
@@ -17,7 +18,7 @@ def hello(event, context):
             origin = ""
     else:
         origin = ""
-
+    '''
     body = {
         "name": SERVER_NAME,
         "version": SERVER_VERSION,
@@ -28,7 +29,7 @@ def hello(event, context):
         "statusCode": 200,
         "body": json.dumps(body),
         "headers": {
-            "Access-Control-Allow-Origin":origin
+            "Access-Control-Allow-Origin":"*"
         }
     }
 
@@ -81,6 +82,7 @@ def post_log(event, context):
 
 
 def upload(event, context):
+    '''
     if "headers" in event:
         if "origin" in event["headers"]:
             origin = event["headers"]["origin"]  # どこから聞かれても返せるように
@@ -88,6 +90,7 @@ def upload(event, context):
             origin = ""
     else:
         origin = ""
+    '''
 
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
@@ -130,7 +133,7 @@ def upload(event, context):
         "statusCode": 200,
         "body": json.dumps(body),
         "headers": {
-            "Access-Control-Allow-Origin":origin
+            "Access-Control-Allow-Origin":"*"
         }
     }
 
@@ -151,6 +154,7 @@ user_id=xxxx な感じ
 '''
 
 def get_files(event, context):
+    '''
     if event["headers"] is not None:
         if "origin" in event["headers"]:
             origin = event["headers"]["origin"]  # どこから聞かれても返せるように
@@ -158,6 +162,7 @@ def get_files(event, context):
             origin = ""
     else:
         origin = ""
+    '''
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table( DYNAMO_TABLE_NAME )
@@ -179,14 +184,13 @@ def get_files(event, context):
 
     body = {
         "files": items,
-        "input": event,
-        "origin":origin
+        "input": event
     }
     response = {
         "statusCode": 200,
         "body": json.dumps(body),
         "headers": {
-            "Access-Control-Allow-Origin":origin
+            "Access-Control-Allow-Origin":"*"
         }
     }
 
@@ -207,6 +211,7 @@ user_id=xxxx&created_at=yyyyyyy な感じ
 '''
 
 def download(event, context):
+    '''
     if event["headers"] is not None:
         if "origin" in event["headers"]:
             origin = event["headers"]["origin"]  # どこから聞かれても返せるように
@@ -214,6 +219,7 @@ def download(event, context):
             origin = ""
     else:
         origin = ""
+    '''
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table( DYNAMO_TABLE_NAME )
@@ -238,15 +244,14 @@ def download(event, context):
 
     body = {
         "result": item,
-        "input": event,
-        "origin":origin
+        "input": event
     }
 
     response = {
         "statusCode": 200,
         "body": json.dumps(body),
         "headers": {
-            "Access-Control-Allow-Origin":origin
+            "Access-Control-Allow-Origin":"*"
         }
     }
 
