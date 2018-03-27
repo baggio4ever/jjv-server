@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import urllib
 import boto3
 from boto3.dynamodb.conditions import Key,Attr
 
@@ -89,6 +90,7 @@ def get_files(event, context):
     if( event["queryStringParameters"] is not None ):
         params = event["queryStringParameters"]
         user_id = params.get("user_id")
+        user_id = urllib.parse.unquote(user_id)
         if user_id is not None:
             response = table.query(
                         KeyConditionExpression=Key('user_id').eq( user_id )
@@ -134,11 +136,15 @@ def download(event, context):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table( DYNAMO_TABLE_NAME )
 
+    found = False
+
     if( event["queryStringParameters"] is not None ):
         params = event["queryStringParameters"]
         user_id = params.get("user_id")
         created_at = params.get("created_at")
         if user_id is not None:
+            user_id = urllib.parse.unquote(user_id)
+            created_at = urllib.parse.unquote(created_at)
             response = table.get_item(
                 Key={
                     'user_id': user_id,
@@ -148,6 +154,7 @@ def download(event, context):
 
             if( response.get('Item') is not None ):
                 item = response['Item']
+                found = True
             else:
                 item = ["no","match"]
 
@@ -157,6 +164,7 @@ def download(event, context):
         item = ["x","Z"]
 
     body = {
+        "found": found,
         "result": item,
         "input": event
     }
