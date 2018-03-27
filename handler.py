@@ -144,9 +144,13 @@ def download(event, context):
                     'user_id': user_id,
                     'created_at': created_at
                 }
-                    )
+            )
 
-            item = response['Item']
+            if( response.get('Item') is not None ):
+                item = response['Item']
+            else:
+                item = ["no","match"]
+
         else:
             item = ["a","b"]
     else:
